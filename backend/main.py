@@ -25,7 +25,11 @@ def get_stock(ticker: str):
     name = info.get("longName", "Unknown") 
     sector = info.get("sector", "Unknown")
     price = float(data["Close"].iloc[-1])
-
+    prevClose = info.get("previousClose", None)
+    marketCap = info.get("marketCap", None)
+    yearHigh = info.get("fiftyTwoWeekHigh", None)
+    yearLow = info.get("fiftyTwoWeekLow", None)
+    
 
 
 
@@ -35,5 +39,9 @@ def get_stock(ticker: str):
         "ticker": symbol,
         "price": price,
         "name": name, 
-        "sector": sector
+        "sector": sector,
+        "prevClose": prevClose,
+        "marketCap": marketCap,
+        "yearHigh": yearHigh,
+        "yearLow": yearLow
     }

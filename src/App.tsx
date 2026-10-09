@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type {SubmitEvent} from 'react'
 import type {Stock} from './types/stock'
+import { formatMarketCap, formatPrice } from './utils/formatters'
 
 function App() {
   const [ticker, setTicker] = useState('')
@@ -45,7 +46,11 @@ function App() {
         <p>Ticker: {stock.ticker}</p>
         <p>Name: {stock.name}</p>
         <p>Sector: {stock.sector}</p>
-        <p>Price: {stock.price}</p>
+        <p>Price: {formatPrice(stock.price)}</p>
+        <p>Previous Close: {formatPrice(stock.prevClose)}</p>
+        <p>Market Cap: {formatMarketCap(stock.marketCap)}</p>
+        <p>Year High: {formatPrice(stock.yearHigh)}</p>
+        <p>Year Low: {formatPrice(stock.yearLow)}</p>
       </div>
     )}
   </>)
