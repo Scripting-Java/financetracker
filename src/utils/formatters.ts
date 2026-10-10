@@ -9,6 +9,35 @@ export function formatMarketCap(value: number|null){
     }).format(value)
 }
 
+export function formatAxisDate(value:string){
+    return new Date(value).toLocaleDateString('en-US',
+        {
+            month:'short',
+            day:'numeric',
+            timeZone: 'America/New_York'
+        }
+    )
+}
+
+export function formatDate(value: string) {
+    return new Date(value).toLocaleDateString('en-US',
+        {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            timeZone: 'America/New_York'
+        })
+}
+
+export function formatBigNum(value: number| null){
+    if(value ===null || !Number.isFinite(value)) return 'Unavailable'
+
+    return new Intl.NumberFormat('en-US', 
+        {
+            notation: 'compact',
+            maximumFractionDigits: 3
+        }).format(value)
+}
 export function formatPrice(value: number|null){
     if(value===null|| !Number.isFinite(value)) return 'Unavailable'
 

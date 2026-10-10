@@ -6,6 +6,7 @@ import { findPriceChange, findPercentChange } from './utils/priceChanges'
 import HistoryTable from './components/HistoryTable'
 import type { HistoryRecord, HistoryResponse } from './types/history'
 import DateRangePicker from './components/DateRangePicker'
+import HistoryChart from './components/HistoryChart'
 
 function getMostRecentWeekday(): string{
   const date = new Date()
@@ -139,6 +140,7 @@ function App() {
         {history.length>0&&(
           <section>
             <h2>Historical Data</h2>
+            <HistoryChart records={history}></HistoryChart>
             <HistoryTable records={history}></HistoryTable>
           </section>
         )}

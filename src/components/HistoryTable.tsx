@@ -1,5 +1,5 @@
 import type { HistoryRecord } from "../types/history";
-import { formatPrice } from "../utils/formatters";
+import { formatPrice, formatBigNum } from "../utils/formatters";
 
 interface HistoryTableProps{
     records: HistoryRecord[];
@@ -27,7 +27,7 @@ export default function HistoryTable({records,}:HistoryTableProps){
                 <td>{formatPrice(record.high) ?? "-"}</td>
                 <td>{formatPrice(record.low) ?? "-"}</td>
                 <td>{formatPrice(record.close) ?? "-"}</td>
-                <td>{record.volume?.toLocaleString() ?? "-"}</td>
+                <td>{formatBigNum(record.volume)}</td>
                 </tr>
             ))}
             </tbody>
