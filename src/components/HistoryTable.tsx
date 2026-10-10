@@ -31,6 +31,6 @@ export default function HistoryTable({records,}:HistoryTableProps){
                 </tr>
             ))}
             </tbody>
-        </table>
-    );
+        </table> 
+    ); 
 }

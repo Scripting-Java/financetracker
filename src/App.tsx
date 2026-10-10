@@ -5,6 +5,22 @@ import { formatMarketCap, formatPrice, formatPercents } from './utils/formatters
 import { findPriceChange, findPercentChange } from './utils/priceChanges'
 import HistoryTable from './components/HistoryTable'
 import type { HistoryRecord, HistoryResponse } from './types/history'
+import DateRangePicker from './components/DateRangePicker'
+
+function getMostRecentWeekday(): string{
+  const date = new Date()
+  const day = date.getDay()
+  if(day===0)
+    date.setDate(date.getDate()-2)
+  if(day===6)
+    date.setDate(date.getDate()-1)
+
+  const year = date.getFullYear()
+  const month = String(date.getMonth()+1).padStart(2, "0")
+  const dayOfMonth = String(date.getDate()).padStart(2,"0")
+  return `${year}-${month}-${dayOfMonth}`;
+}
+
 
 function App() {
   const [ticker, setTicker] = useState('')
@@ -12,6 +28,8 @@ function App() {
   const [error, setError] = useState<string|null>(null)
   const [history, setHistory] = useState<HistoryRecord[]>([])
   const [historyError, setHistoryError] = useState<string|null>(null)
+  const [startDate, setStartDate] = useState(getMostRecentWeekday)
+  const [endDate, setEndDate] = useState(getMostRecentWeekday)
 
   async function handleSearchSubmit(event: SubmitEvent<HTMLFormElement>){
     setError(null)
@@ -25,7 +43,10 @@ function App() {
       setHistoryError(null)
       return 
     }
- 
+     if(startDate>endDate){
+        setError("End date must be on or after start date")
+        return
+      }
     try {
       setStock(null)
       const response = await fetch(
@@ -40,7 +61,7 @@ function App() {
 
      const result: Stock = await response.json()
      setStock(result)
-     await fetchHistory(symbol)
+     await fetchHistory(symbol, startDate, endDate)
     }
     catch(error){
       setStock(null)
@@ -52,14 +73,14 @@ function App() {
     }
   } 
   
-  async function fetchHistory(symbol: string)
+  async function fetchHistory(symbol: string, start: string, end:string)
   {
     setHistory([])
     setHistoryError(null)
 
     try{
       const response = await fetch(
-        `http://127.0.0.1:8001/api/stock/${encodeURIComponent(symbol)}/history?start=2026-10-01&end=2026-10-06&interval=1d`
+        `http://127.0.0.1:8001/api/stock/${encodeURIComponent(symbol)}/history?start=${start}&end=${end}&interval=1d`
       )
 
       const result: HistoryResponse = await response.json()
@@ -106,6 +127,14 @@ function App() {
         <p>Price Change: {formatPrice(findPriceChange(stock.price, stock.prevClose))}</p>
         <p>Daily% Change: {formatPercents(findPercentChange(stock.price, stock.prevClose))}</p>
         {historyError && <p role='alert'>{historyError}</p>}
+
+        <DateRangePicker
+          startDate = {startDate}
+          endDate = {endDate}
+          onStartDateChange = {setStartDate}
+          onEndDateChange = {setEndDate}
+          >
+        </DateRangePicker>
 
         {history.length>0&&(
           <section>
