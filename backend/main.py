@@ -140,7 +140,7 @@ def get_stock_history(
         if "Adj Close" not in data.columns:
             adjusted_close = None
         elif row["Adj Close"] != row["Adj Close"]:
-            adjusted_close = None
+            adjusted_close = None 
         else:
             adjusted_close = float(row["Adj Close"])
         

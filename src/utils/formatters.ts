@@ -29,3 +29,4 @@ export function formatPercents(value: number|null){
         maximumFractionDigits: 2
     }).format(value)
 }
+
