@@ -7,7 +7,5 @@ export interface Stock{
     marketCap:number| null,
     yearHigh: number| null,
     yearLow: number| null,
-    
-
 }
 

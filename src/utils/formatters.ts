@@ -1,5 +1,5 @@
 export function formatMarketCap(value: number|null){
-    if(value===null) return 'Unavailable'
+    if(value===null|| !Number.isFinite(value)) return 'Unavailable'
 
     return new Intl.NumberFormat('en-US', {
         notation: 'compact',
@@ -8,9 +8,10 @@ export function formatMarketCap(value: number|null){
         currency:'USD'
     }).format(value)
 }
+
 export function formatPrice(value: number|null){
-    if(value===null) return 'Unavailable'
-    
+    if(value===null|| !Number.isFinite(value)) return 'Unavailable'
+
     return new Intl.NumberFormat('en-US',{
         notation:'compact',
         style: 'currency',
@@ -18,4 +19,13 @@ export function formatPrice(value: number|null){
         maximumFractionDigits:2
     }
     ).format(value)
+}
+
+export function formatPercents(value: number|null){
+    if(value===null || !Number.isFinite(value)) return 'Unavailable'
+
+    return new Intl.NumberFormat('en-US',{
+        style: 'percent',
+        maximumFractionDigits: 2
+    }).format(value)
 }

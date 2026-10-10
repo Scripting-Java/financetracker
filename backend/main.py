@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import yfinance as yf
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,10 +17,21 @@ app.add_middleware(
 def get_stock(ticker: str):
 
     symbol = ticker.upper()
-    stock = yf.Ticker(symbol)
-    data = stock.history(period = "1d")
-    if data.empty:
-     return{"error":"Ticker not found"}
+    try:
+        stock = yf.Ticker(symbol)
+        data = stock.history(period = "1d")
+        if data.empty:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No market data found for ticker '{symbol}'. Check the ticker and try again"
+        )
+    except HTTPException:
+        raise HTTPException
+    except Exception:
+        raise HTTPException(
+            status_code=502,
+            detail="Some other error occurred. This could mean the data provider is temporarily unavailable. Please try again."
+        )
     info = stock.info
     name = info.get("longName", "Unknown") 
     sector = info.get("sector", "Unknown")
@@ -32,16 +43,13 @@ def get_stock(ticker: str):
     
 
 
-
-    
-
     return{
         "ticker": symbol,
         "price": price,
         "name": name, 
         "sector": sector,
-        "prevClose": prevClose,
+        "prevClose": prevClose, 
         "marketCap": marketCap,
         "yearHigh": yearHigh,
-        "yearLow": yearLow
+        "yearLow": yearLow,
     }
