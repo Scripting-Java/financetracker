@@ -1,4 +1,4 @@
-import { ResponsiveContainer, ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, Bar, Customized, useXAxisScale, useYAxisScale } from "recharts";
+import { ResponsiveContainer, ComposedChart, XAxis, YAxis, CartesianGrid, Bar, Customized, useXAxisScale, useYAxisScale } from "recharts";
 import type { HistoryRecord } from "../types/history";
 import { formatPrice, formatAxisDate, formatDate } from '../utils/formatters'
 import { useState } from "react"
