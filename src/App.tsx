@@ -37,27 +37,27 @@ function App() {
   const [endDate, setEndDate] = useState(getMostRecentWeekday)
   const [interval, setInterval] = useState('1d')
   const [chartType, setChartType] = useState<'line' | 'candle'>('line')
-  const [watchlist, setWatchlist] = useState<string[]>(()=>{
-    try{
+  const [watchlist, setWatchlist] = useState<string[]>(() => {
+    try {
       const saved = localStorage.getItem('financeTrackerWatchlist')
-      return saved? JSON.parse(saved) as string[] : []
-    }catch{
+      return saved ? JSON.parse(saved) as string[] : []
+    } catch {
       return []
     }
   })
 
-  function saveWatchlist(next: string[]){
+  function saveWatchlist(next: string[]) {
     setWatchlist(next)
     localStorage.setItem('financeTrackerWatchlist', JSON.stringify(next))
   }
 
-  function addTicker(symbol:string){
-    if(watchlist.includes(symbol)) return
+  function addTicker(symbol: string) {
+    if (watchlist.includes(symbol)) return
     saveWatchlist([...watchlist, symbol])
   }
 
-  function removeTicker(symbol: string){
-    saveWatchlist(watchlist.filter((ticker)=> ticker !== symbol))
+  function removeTicker(symbol: string) {
+    saveWatchlist(watchlist.filter((ticker) => ticker !== symbol))
   }
 
   async function handleSearchSubmit(event: SubmitEvent<HTMLFormElement>) {
@@ -77,15 +77,15 @@ function App() {
       return
     }
     await searchTicker(symbol)
-    
+
   }
 
-  function selectTicker(symbol:string){
+  function selectTicker(symbol: string) {
     setTicker(symbol)
     void searchTicker(symbol)
   }
 
-  async function searchTicker(symbol: string){
+  async function searchTicker(symbol: string) {
     setError(null)
     try {
       setStock(null)
@@ -140,13 +140,13 @@ function App() {
     }
   }
 
-  useEffect(()=> {
-    if(!stock) return
-    if(interval !=='1d'){
+  useEffect(() => {
+    if (!stock) return
+    if (interval !== '1d') {
       const today = new Date()
       const year = today.getFullYear()
-      const month = String(today.getMonth()+1).padStart(2,'0')
-      const day = String(today.getDate()).padStart(2,'0')
+      const month = String(today.getMonth() + 1).padStart(2, '0')
+      const day = String(today.getDate()).padStart(2, '0')
       const todayString = `${year}-${month}-${day}`
 
       setStartDate(todayString)
@@ -154,10 +154,10 @@ function App() {
 
       void fetchHistory(stock.ticker, todayString, todayString, interval)
     }
-    else{
+    else {
       void fetchHistory(stock.ticker, startDate, endDate, interval)
     }
-  }, [interval,stock])
+  }, [interval, stock])
 
   async function handleRefreshHistory() {
     if (!stock) return
@@ -169,31 +169,33 @@ function App() {
     await fetchHistory(stock.ticker, startDate, endDate, interval)
   }
 
-  function reset(){
+  function reset() {
     localStorage.removeItem('financeTrackerWatchlist')
     localStorage.removeItem('financeTrackerPurchases')
     window.location.reload()
   }
 
-  
+
   return (
-    <><h1> Finance Tracker
-    <button type = "button" onClick={reset}>
-      Reset All Data!
-    </button>
-    </h1>
+    <>
+      <header className = "app-Header">
+      <h1> Finance Tracker </h1>
+      <button type="button" onClick={reset}>
+        Reset All Data!
+      </button>
+      </header>
       <form onSubmit={handleSearchSubmit}>
         <label inputMode='text'>
-          Search for a ticker
+          Search for a ticker:
           <input type="text" name="Ticker" id="searchButton" value={ticker} onChange={(event) => setTicker(event.target.value)} />
         </label>
         <button>Search</button>
       </form>
       <Watchlist
-      tickers={watchlist}
-      onAdd={addTicker}
-      onRemove={removeTicker}
-      onSelect={selectTicker}
+        tickers={watchlist}
+        onAdd={addTicker}
+        onRemove={removeTicker}
+        onSelect={selectTicker}
       />
       <Simulator />
       {error && <p role="alert">{error}</p>}
@@ -219,40 +221,40 @@ function App() {
           >
           </DateRangePicker>
 
-            <section>
-              <h2>Historical Data</h2>
-              <label>
-                Chart Type:
-                <select
-                  value={chartType}
-                  onChange={(event) => setChartType(event.target.value as 'line' | 'candle')}
-                >
-                  <option value="line">Line</option>
-                  <option value="candle">Candlestick</option>
-                </select>
-              </label>
-              <label>
-                Interval
-                <select
-                  value={interval}
-                  onChange={(event) => setInterval(event.target.value)}
-                >
-                  <option value="1d">Daily</option>
-                  <option value="1m">Every Minute</option>
-                  <option value="5m">Every 5 Minutes</option>
-                  <option value="15m">Every 15 Minutes</option>
-                </select>
-              </label>
-              <button type='button' onClick={handleRefreshHistory}>
-                Refresh
-              </button>
-              {chartType === 'line'?(
-                <HistoryChart records={history} />
-              ):(
-                <CandleChart records = {history} />
-              )}
-              <HistoryTable records={history}></HistoryTable>
-            </section>
+          <section>
+            <h2>Historical Data</h2>
+            <label>
+              Chart Type:
+              <select
+                value={chartType}
+                onChange={(event) => setChartType(event.target.value as 'line' | 'candle')}
+              >
+                <option value="line">Line</option>
+                <option value="candle">Candlestick</option>
+              </select>
+            </label>
+            <label>
+              Interval
+              <select
+                value={interval}
+                onChange={(event) => setInterval(event.target.value)}
+              >
+                <option value="1d">Daily</option>
+                <option value="1m">Every Minute</option>
+                <option value="5m">Every 5 Minutes</option>
+                <option value="15m">Every 15 Minutes</option>
+              </select>
+            </label>
+            <button type='button' onClick={handleRefreshHistory}>
+              Refresh
+            </button>
+            {chartType === 'line' ? (
+              <HistoryChart records={history} />
+            ) : (
+              <CandleChart records={history} />
+            )}
+            <HistoryTable records={history}></HistoryTable>
+          </section>
         </div>
       )}
     </>)
