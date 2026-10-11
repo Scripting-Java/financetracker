@@ -10,6 +10,7 @@ import HistoryChart from './components/HistoryChart'
 import { useEffect } from 'react'
 import CandleChart from './components/CandleChart'
 import Watchlist from './components/Watchlist'
+import Simulator from './components/Simulator'
 
 function getMostRecentWeekday(): string {
   const date = new Date()
@@ -168,10 +169,19 @@ function App() {
     await fetchHistory(stock.ticker, startDate, endDate, interval)
   }
 
+  function reset(){
+    localStorage.removeItem('financeTrackerWatchlist')
+    localStorage.removeItem('financeTrackerPurchases')
+    window.location.reload()
+  }
+
   
   return (
-    <><h1> Finance Tracker</h1>
-      <h2>Welcome to the Tracker</h2>
+    <><h1> Finance Tracker
+    <button type = "button" onClick={reset}>
+      Reset All Data!
+    </button>
+    </h1>
       <form onSubmit={handleSearchSubmit}>
         <label inputMode='text'>
           Search for a ticker
@@ -185,6 +195,7 @@ function App() {
       onRemove={removeTicker}
       onSelect={selectTicker}
       />
+      <Simulator />
       {error && <p role="alert">{error}</p>}
       {stock && (
         <div>
