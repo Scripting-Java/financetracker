@@ -9,6 +9,7 @@ import DateRangePicker from './components/DateRangePicker'
 import HistoryChart from './components/HistoryChart'
 import { useEffect } from 'react'
 import CandleChart from './components/CandleChart'
+import Watchlist from './components/Watchlist'
 
 function getMostRecentWeekday(): string {
   const date = new Date()
@@ -35,6 +36,28 @@ function App() {
   const [endDate, setEndDate] = useState(getMostRecentWeekday)
   const [interval, setInterval] = useState('1d')
   const [chartType, setChartType] = useState<'line' | 'candle'>('line')
+  const [watchlist, setWatchlist] = useState<string[]>(()=>{
+    try{
+      const saved = localStorage.getItem('financeTrackerWatchlist')
+      return saved? JSON.parse(saved) as string[] : []
+    }catch{
+      return []
+    }
+  })
+
+  function saveWatchlist(next: string[]){
+    setWatchlist(next)
+    localStorage.setItem('financeTrackerWatchlist', JSON.stringify(next))
+  }
+
+  function addTicker(symbol:string){
+    if(watchlist.includes(symbol)) return
+    saveWatchlist([...watchlist, symbol])
+  }
+
+  function removeTicker(symbol: string){
+    saveWatchlist(watchlist.filter((ticker)=> ticker !== symbol))
+  }
 
   async function handleSearchSubmit(event: SubmitEvent<HTMLFormElement>) {
     setError(null)
@@ -52,6 +75,17 @@ function App() {
       setError("End date must be on or after start date")
       return
     }
+    await searchTicker(symbol)
+    
+  }
+
+  function selectTicker(symbol:string){
+    setTicker(symbol)
+    void searchTicker(symbol)
+  }
+
+  async function searchTicker(symbol: string){
+    setError(null)
     try {
       setStock(null)
       const response = await fetch(
@@ -133,6 +167,7 @@ function App() {
 
     await fetchHistory(stock.ticker, startDate, endDate, interval)
   }
+
   
   return (
     <><h1> Finance Tracker</h1>
@@ -144,6 +179,12 @@ function App() {
         </label>
         <button>Search</button>
       </form>
+      <Watchlist
+      tickers={watchlist}
+      onAdd={addTicker}
+      onRemove={removeTicker}
+      onSelect={selectTicker}
+      />
       {error && <p role="alert">{error}</p>}
       {stock && (
         <div>
