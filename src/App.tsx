@@ -90,7 +90,7 @@ function App() {
     try {
       setStock(null)
       const response = await fetch(
-        `http://127.0.0.1:8001/api/stock/${encodeURIComponent(symbol)}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/stock/${encodeURIComponent(symbol)}`
       )
       if (!response.ok) {
         const result = await response.json()
@@ -118,7 +118,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8001/api/stock/${encodeURIComponent(symbol)}/history?start=${start}&end=${end}&interval=${selectedInterval}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/stock/${encodeURIComponent(symbol)}/history?start=${start}&end=${end}&interval=${selectedInterval}`
       )
 
       const result: HistoryResponse = await response.json()
@@ -178,11 +178,11 @@ function App() {
 
   return (
     <>
-      <header className = "app-Header">
-      <h1> Finance Tracker </h1>
-      <button type="button" onClick={reset}>
-        Reset All Data!
-      </button>
+      <header className="app-Header">
+        <h1> Finance Tracker </h1>
+        <button type="button" onClick={reset}>
+          Reset All Data!
+        </button>
       </header>
       <form onSubmit={handleSearchSubmit}>
         <label inputMode='text'>

@@ -111,7 +111,7 @@ export default function Simulator() {
                     const historyStart = startDate.toISOString().slice(0, 10)
 
                     const response = await fetch(
-                        `http://127.0.0.1:8001/api/stock/${encodeURIComponent(ticker)}/history?start=${historyStart}&end=${new Date().toISOString().slice(0, 10)}&interval=1d`
+                        `${import.meta.env.VITE_API_BASE_URL}/api/stock/${encodeURIComponent(ticker)}/history?start=${historyStart}&end=${new Date().toISOString().slice(0, 10)}&interval=1d`
                     )
 
                     if (!response.ok)

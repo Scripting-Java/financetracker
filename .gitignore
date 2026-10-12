@@ -24,3 +24,11 @@ dist-ssr
 *.sw?
 
 backend/.venv/
+# Local environment configuration
+.env
+.env.*
+!.env.example
+
+# Python generated files
+__pycache__/
+*.py[cod]
