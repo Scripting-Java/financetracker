@@ -179,7 +179,7 @@ function App() {
   return (
     <>
       <header className="app-Header">
-        <h1> Finance Tracker </h1>
+        <h1> Stock Tracker </h1>
         <button type="button" onClick={reset}>
           Reset All Data!
         </button>
